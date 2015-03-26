@@ -36,6 +36,7 @@
 	o.es6.extendNatives = o.es6["class"] && o.tryIt("'use strict'; class Foo extends Array { }; var a = new Foo(); a.push(1,2,3); if (a.length !== 3) throw 0;");
 	o.es6.TCO = o.tryIt("'use strict'; +function a(b){ if (b<6E4) a(b+1); }(0);");
 	o.es6.symbolImplicitCoercion = !o.tryIt("'use strict'; var a = Symbol('a'); a + '';");
+	o.es6.functionNameInference = o.tryIt("'use strict'; var a = { b: function(){} }; if (a.name != 'b') throw 0;");
 
 	// APIs
 	o.es6.ObjectStatics = ("getOwnSymbolNames" in Object) && ("assign" in Object) && ("is" in Object);
