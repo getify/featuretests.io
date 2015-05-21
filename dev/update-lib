@@ -1,0 +1,10 @@
+#!/bin/bash
+
+npm update es-feature-tests
+
+cp node_modules/es-feature-tests/deploy/* web/dev/
+
+chmod 640 web/dev/rs.js web/dev/featuretests.html web/dev/featuretests.js
+chown kyle:kyle web/dev/rs.js web/dev/featuretests.html web/dev/featuretests.js
+
+echo "Done."

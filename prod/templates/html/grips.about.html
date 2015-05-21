@@ -1,0 +1,42 @@
+{$extend "/master.html" $}
+
+
+{$define "#content" }
+
+<div id="content">
+
+	<h1 id="about">About</h1>
+	<p>
+		ES6+ Feature Tests as a service.
+	</p>
+	<p>
+		<strong>It's easy!</strong> Load the <code>"rs.js"</code> library, request feature test results for the current browser, use those results to determine what code to deliver for your application!
+	</p>
+	<p>
+		If all the JavaScript features/syntax your code uses are supported natively by the browser, why would you load up the ugly transpiled code? Why would you load dozens of kb of polyfills/shims if all (or most of) those APIs are already built-in?
+	</p>
+	<p>
+		Just use the original authored ES6+ code in newest browsers! Only use transpiled code and polyfills/shims for browsers which are missing the features/syntax you need.
+	</p>
+	<p>
+		Don't rely on stale <em>caniuse</em> data baked into build tools that matches a browser based on brittle <code>UserAgent</code> string parsing. <strong>Feature Test!</strong> That's the most reliable and sensible approach.
+	</p>
+
+	<h2 id="privacy">Privacy</h2>
+
+	<p>
+		There is absolutely no data collection of any kind performed by this service (not even cookies). The only persistent information is the <code>LocalStorage</code> caching of test results in each user's browser, which can be <a href="/details#disableLocalCache">disabled via the library's API</a>. These test results are not collected or monitored by the service in any way.
+	</p>
+
+	<h2 id="license-copyright">License &amp; Copyright</h2>
+
+	<p>
+		The code and all the documentation are released under the MIT license.
+	</p>
+	<p>
+		<a href="http://getify.mit-license.org/" data-ignore>http://getify.mit-license.org/</a>
+	</p>
+
+</div>
+
+{$}

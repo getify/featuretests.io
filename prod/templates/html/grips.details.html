@@ -1,0 +1,247 @@
+{$extend "/master.html" $}
+
+
+{$define "#content" }
+
+<div id="content">
+
+	<p>
+		<strong>jump to:</strong>
+	</p>
+
+	<ul>
+		<li><a href="#overview" data-ignore>Overview</a></li>
+		<li><a href="#library" data-ignore>Library</a></li>
+		<li><a href="#implementation-details" data-ignore>Implementation Details</a></li>
+		<li><a href="#node-iojs" data-ignore>Node/iojs</a></li>
+		<li><a href="#test-results" data-ignore>Test Results</a></li>
+		<li><a href="#api" data-ignore>API</a></li>
+	</ul>
+
+	<h1 id="overview">Overview</h1>
+
+	<p>
+		This service can be used either as a JS library (<code>"rs.js"</code>) loaded into a page, as a Node/iojs package, or via an API call (cross-domain CORS Ajax enabled) to retrieve the tests that you can perform yourself.
+	</p>
+	<p>
+		The <code>"rs.js"</code> library uses a number of tricks to reduce the performance penalty overhead of running these tests in the browser. It runs them <em>off-thread</em> if possible, and caches the results for up to 2 weeks, meaning the tests aren't unnecessarily repeated.
+	</p>
+	<p>
+		Also, cached test results are accessible across all sites using this service, further reducing the chances that a user will actually see any delay waiting for test results for any site that uses the service.
+	</p>
+
+	<h2 id="library">Library</h2>
+
+	<p>
+		The entry point for using this service is to load the <code>https://featuretests.io/rs.js</code> library script into the page. You should probably load it as early as possible in your load process, so that the tests can be done behind the scenes and be ready when you need them.
+	</p>
+	<p>
+		The library provides a function to call to request the tests -- if they haven't already been performed (they probably have, more on that later!) -- and retrieve the test results. That call looks like:
+	</p>
+
+<pre class="examplecode">
+window["Reflect.supports"]( "all", function(results,ts){<br>
+&nbsp;&nbsp;&nbsp;// ..<br>
+});<br>
+</pre>
+
+	<p>
+		<strong>Note:</strong> Rather than adding a method called <code>supports(..)</code> to the <code>Reflect</code> global (added in ES6), this library (for now) adds a global property called <code>"Reflect.supports"</code>. This should be safer and more future-proof. The hope is an API of this sort may eventually come to the actual <code>Reflect.supports</code> location.
+	<p>
+	<p>
+		The <code>"all"</code> parameter value performs the entire set of tests for ES6+ features/syntax. Right now, this is the only allowed value, but in the future you may be able to perform subsets of the test suite, or even individual tests.
+	</p>
+	<p>
+		The <code>results</code> value returned to your callback is an object, with each property corresponding to a test, and the <code>true</code> or <code>false</code> values to indicate if the feature/syntax is supported in the browser.
+	</p>
+	<p>
+		The <code>ts</code> argument is the timestamp (in GMT) when the last results were cached, or <em>right now</em> if not available (or too out of date). Results are good for up to two weeks from the moment the test is run.
+	</p>
+	<p>
+		Check out <a href="/mybrowser">your full browser results</a> or try the above snippet in your developer console to see the current results for your browser!
+	</p>
+
+	<h3 id="implementation-details">Implementation Details</h3>
+
+	</p>
+		The <code>"rs.js"</code> library checks to see if the tests have already been run recently (cached in <code>LocalStorage</code>). If so, and not past the results' expiration date (2 weeks), the results are immediately available to you with no further action.
+	</p>
+	<p>
+		If the results haven't been cached, or if they're too old, the library loads an invisible cross-domain <code>&lt;iframe></code> from this <code>https://featuretests.io</code> origin, and loads the test library to perform the tests. The test library also checks to see if the results have been recently <code>LocalStorage</code> cached on the <code>featuretests.io</code> origin (so globally across all sites that use this service!), and if so, uses those cached results.
+	</p>
+	<p id="content-security-policy">
+		<strong>Warning:</strong><br>
+		One important but subtle requirement of your usage of this service is that you will have to allow your site to load and use a cross-domain <code>&lt;iframe></code>. By default, most sites do support this. However, your site may have a more restrictive <a href="https://developer.mozilla.org/en-US/docs/Web/Security/CSP">CSP (content security policy)</a> in effect that disallows these.
+	</p>
+	<p>
+		So, if the service isn't working due to your CSP (you'll see CSP errors in your console!), you'll need to specify a <a href="https://developer.mozilla.org/en-US/docs/Web/Security/CSP/CSP_policy_directives#child-src"><code>child-src</code></a> policy that at a minimum allows the "https://featuretests.io" origin. Here's what that CSP response header may look like:
+	</p>
+<pre class="examplecode">
+Content-Security-Policy:<br>
+default-src 'self'; script-src 'self' https://featuretests.io; child-src 'self' https://featuretests.io;
+</pre>
+	<p>
+		If valid/recent test results cannot be loaded from the <code>LocalStorage</code> cache, the <code>&lt;iframe></code> code spins up a test session.
+	</p>
+	<p>
+		It first attempts to run the tests in a <code>SharedWorker</code>, which can be shared by multiple tabs if they're all using this service's library. If <code>SharedWorker</code>s are not available, a normal dedicated Web Worker is attempted. In either case, this performs the tests <em>off-thread</em> to reduce any performance penalty.
+	</p>
+	<p>
+		If neither kind of Web Worker can be used, the tests are performed directly in the <code>&lt;iframe></code>.
+	</p>
+	<p id="disableLocalCache">
+		As mentioned, by default results are cached for 2 weeks using <code>LocalStorage</code>, both on the <code>featuretests.io</code> origin (so globally accessible to any site via the <code>&lt;iframe></code>), as well as on your site's <code>LocalStorage</code> origin. To disable the <code>LocalStorage</code> caching (for this page session only):
+	</p>
+
+<pre class="examplecode">
+window["Reflect.supports"].disableLocalCache();<br>
+</pre>
+
+	<p>
+		To just clear the local site's cache (not the global one on the "https://featuretests.io" origin) but not disable the caching of results, use:
+	</p>
+
+<pre class="examplecode">
+window["Reflect.supports"].clearLocalSiteCache();<br>
+</pre>
+
+	<h3 id="node-iojs">Node/iojs</h3>
+
+	<p>
+		The library can also be loaded and used in Node/ioJS:
+	</p>
+
+<pre class="examplecode">
+var ReflectSupports = require("es-feature-tests");<br>
+<br>
+ReflectSupports( "all", function(results){<br>
+&nbsp;&nbsp;&nbsp;// ..<br>
+});<br>
+</pre>
+
+	<p>
+		<strong>Note:</strong> Obviously, usage in Node/iojs doesn't use any of the <code>LocalStorage</code> caching or the <code>Worker</code> <em>off-thread</em> processing.
+	</p>
+
+	<h3 id="test-results">Test Results</h3>
+
+	<p>
+		The following test results are provided by the library:
+	</p>
+
+	<p>
+		<strong>Everything:</strong>
+	</p>
+	<ul>
+		<li><code>everything</code>: Only <code>true</code> if all tests passed, <code>false</code> otherwise</li>
+	</ul>
+
+	<p>
+		<strong>Syntax:</strong>
+	</p>
+	<ul>
+		<li><code>letConst</code>: <code>let</code> and <code>const</code></li>
+		<li><code>defaultParameter</code>: default function parameter values</li>
+		<li><code>spreadRest</code>: <code>...</code> operator</li>
+		<li><code>destructuring</code>: destructuring assignments/declarations for arrays and objects</li>
+		<li><code>parameterDestructuring</code>: destructuring for function parameters</li>
+		<li><code>templateString</code>: <code>`..`</code> Template String Literals</li>
+		<li><code>forOf</code>: <code>for (var v of something) { .. }</code></li>
+		<li><code>arrow</code>: <code>x => x * x</code></li>
+		<li><code>generator</code>: <code>function *foo() { .. }</code></li>
+		<li><code>conciseMethodProperty</code>: <code>o = { b() { .. }, a }</code></li>
+		<li><code>computedProperty</code>: <code>o = { ["a" + "b"]: 42 }</code></li>
+		<li><code>moduleExport</code>: In modules, <code>export default foo = 42</code></li>
+		<li><code>moduleImport</code>: In modules, <code>import bar from "foo"</code></li>
+		<li><code>"class"</code> (alias: <code>classes</code>): <code>class A extends B { .. }</code></li>
+		<li><code>numericLiteral</code>: Octal and binary literal forms (<code>0o1, 0b10</code>)</li>
+		<li><code>oldOctalLiteral</code>: Old octal literal invalid now (<code>01</code>)</li>
+		<li><code>symbol</code>: <code>Symbol</code> primitive</li>
+		<li><code>unicodeEscape</code>: Unicode code-point escape form in string literals (<code>'\u{20BB7}'</code>)</li>
+		<li><code>unicodeIdentifier</code>: Unicode code-point escape form in identifier names (<code>\\u{20BB7} = 42</code>)</li>
+		<li><code>unicodeRegExp</code>: Unicode code-point escape form in regular expressions (<code>/\\u{20BB7}/u</code>)</li>
+		<li><code>stickyRegExp</code>: <code>y</code> flag for sticky regular expressions</li>
+	</ul>
+
+	<p>
+		<strong>Semantics:</strong>
+	</p>
+
+	<ul>
+		<li><code>letTDZ</code>: TDZ error for too-early access of <code>let</code> or <code>const</code> declarations</li>
+		<li><code>constRedef</code>: Redefinition of <code>const</code> declarations not allowed</li>
+		<li><code>objectProto</code>: <code>__proto__</code> in object literal definition sets <code>[[Prototype]]</code> link</li>
+		<li><code>objectSuper</code>: <code>super</code> allowed in object methods</li>
+		<li><code>extendNatives</code>: <code>class ABC extends Array { .. }</code></li>
+		<li><code>TCO</code>: Tail-call optimization for function calls and recursion</li>
+		<li><code>symbolImplicitCoercion</code>: Symbols can't be implicitly coerced (<code>Symbol("a") + ""</code>)</li>
+		<li><code>functionNameInfernece</code>: Inferences for function <code>name</code> property for anonymous functions</li>
+	</ul>
+
+	<p>
+		<strong>Built-in APIs:</strong>
+	</p>
+
+	<ul>
+		<li><code>ObjectStatics</code>: Static functions added to <code>Object</code></li>
+		<li><code>ArrayStatics</code>: Static functions added to <code>Array</code></li>
+		<li><code>ArrayMethods</code>: Methods added to <code>Array.prototype</code></li>
+		<li><code>TypedArrays</code>: TypedArrays like <code>Uint8Array</code> (technically a web platform feature long before ES6)</li>
+		<li><code>TypedArrayStatics</code>: Some <code>Array</code> statics (like <code>from(..)</code>) added to the TypedArray constructors</li>
+		<li><code>TypedArrayMethods</code>: Some <code>Array</code> methods (like <code>map(..)</code>) added to the TypedArray prototypes</li>
+		<li><code>StringMethods</code>: Methods added to <code>String.prototype</code></li>
+		<li><code>NumberStatics</code>: Static functions added to <code>Number</code></li>
+		<li><code>MathStatics</code>: Static functions added to <code>Math</code></li>
+		<li><code>collections</code>: Collections added (<code>Map</code>, <code>Set</code>, <code>WeakMap</code>, <code>WeakSet</code>)</li>
+		<li><code>Proxy</code>: Proxies</li>
+		<li><code>Promise</code>: Promises</li>
+	</ul>
+	<p>
+		<strong>Note:</strong> More tests will be added soon. Check back often.
+	</p>
+
+	<h2 id="api">API</h2>
+
+	<p>
+		You can use the library's <code>api(..)</code> method to retrieve the tests so that you can run them yourself (<code>new Function(..)</code> or <code>eval(..)</code>) if desired:
+	</p>
+
+<pre class="examplecode">
+window["Reflect.supports"].api( "all", function(tests){<br>
+&nbsp;&nbsp;&nbsp;// ..<br>
+});<br>
+</pre>
+
+	<p>
+		The <code>tests</code> object returned will include keys for all the above mentioned tests, where each value is an object with one of the following properties:
+	</p>
+
+	<ul>
+		<li><code>passes</code>: the test string provided should pass a compilation</li>
+		<li><code>fails</code>: the test string provided should fail a compilation</li>
+		<li><code>is</code>: the test string provided should return <code>true</code> when executed</li>
+		<li><code>not</code>: the test string provided should return <code>false</code> when executed</li>
+	</ul>
+
+	<p>
+		Some tests also include a <code>dependencies</code> array which includes the names of other tests that also must be <code>true</code>.
+	</p>
+	<p>
+		You can also perform an API call to the service itself, without using the libary, at the following URL:
+	</p>
+	<p>
+		<code>https://featuretests.io/api</code>
+	</p>
+	<p>
+		Right now, the API assumes you want all test values back, so there's no options to control the API call. This will probably be more granular in the future. Check back soon.
+	</p>
+	<p>
+		The return from the API call is a JSON object with all the tests, identical to the format received from the library's <code>api(..)</code> call as explained above.
+	</p>
+	<p>
+		The API URL endpoint is CORS enabled, meaning you can make a cross-domain Ajax request to retrieve the test results into a browser. Or you can query the API URL endpoint from your server, and combine the test results into your site's code.
+	</p>
+
+</div>
+
+{$}

@@ -1,0 +1,51 @@
+{$extend "/master.html" $}
+
+
+{$define "#content" | last_tested = $.timestamp ? "#test_date" : "#no_test" }
+
+<div id="content">
+
+	<h1>Test My Browser</h1>
+	<p>
+		What ES6+ features does your browser support?
+	</p>
+	<p>
+		<input type="button" value="run all tests" rel="js-test-btn">
+	</p>
+	<p>
+		{$partial last_tested $}
+		{$partial "#test_results" $}
+	</p>
+
+</div>
+
+{$}
+
+
+{$define "#no_test" }
+	<div rel="js-test-date">No test results available yet...</div>
+{$}
+
+
+{$define "#test_date" }
+	<div rel="js-test-date">Last Tested: <strong>{$insert $.timestamp $}</strong></div>
+{$}
+
+
+{$define "#test_results" | results = $.test_results ? "#results" : "#pendingresults" }
+<pre class="examplecode mybrowserresults" rel="js-test-results">
+{<br>
+{$partial results $}
+}<br>
+</pre>
+{$}
+
+
+{$define "#pendingresults" }&nbsp;&nbsp;&nbsp;// ..<br>{$}
+
+
+{$define "#results" }
+	{$loop $.test_results }
+{$insert _.value $}<br>
+	{$}
+{$}

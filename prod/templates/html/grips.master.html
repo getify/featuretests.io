@@ -1,0 +1,35 @@
+{$define "#page" |
+	title = $.page_title ? $.page_title : "ES Feature Tests" |
+	loadJSFile = $.PROD ? "load.min.js" : "load.js"
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>{$insert title $}</title>
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+
+<div id="notifications"><div class="list"></div><div class="close">X</div></div>
+
+{$partial "#nav" $}
+
+{$partial "#content" $}
+
+<script src="/js/{$insert loadJSFile $}"></script>
+
+</body>
+</html>
+
+{$}
+
+
+{$define "#nav" }
+	<nav><a href="/">home</a> | <a href="/about">about</a> | <a href="/details">details</a> | <a href="https://github.com/getify/es-feature-tests" data-ignore>github</a> | <a href="/mybrowser">test my browser</a></nav>
+{$}
+
+
+{$define "#content" }{$}

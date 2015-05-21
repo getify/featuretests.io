@@ -1,0 +1,47 @@
+{$extend "/master.html" $}
+
+
+{$define "#content" }
+
+<div id="content">
+
+	<h1>ES Feature Tests</h1>
+	<p>
+		Feature test ES6+ JavaScript syntax and APIs. Use these in-browser test results to deliver the best code to each browser.
+	</p>
+	<p>
+		<strong>Load your native ES6+ code in ES6+ compliant browsers</strong> and your transpiled code in older browsers.
+	</p>
+	<p>
+		{$partial "#examplecode" $}
+	</p>
+	<p>
+		<strong>Note:</strong> The use of the inline <code>&lt;script></code> tag here is for illustration purposes only. Don't actually do this in your HTML. Use a script. For more information, see the <a href="http://davidwalsh.name/es6-features-testing#the-solution">discussion of "bootstrappers" here</a> in the <a href="http://davidwalsh.name/es6-features-testing">ES6: Features By Testing</a> blog post.
+	</p>
+
+</div>
+
+{$}
+
+
+{$define "#examplecode" | results = $.test_results ? "#testresults" : "#pendingresults" }
+<pre class="examplecode" rel="js-examplecode">
+&lt;script src="https://featuretests.io/rs.js">&lt;/script><br>
+&lt;script><br>
+window["Reflect.supports"]( "all", function(tests){<br>
+&nbsp;&nbsp;&nbsp;console.log( tests );<br>
+{$partial results $}
+});<br>
+&lt;/script><br>
+</pre>
+{$}
+
+
+{$define "#pendingresults" }&nbsp;&nbsp;&nbsp;// ..<br>{$}
+
+
+{$define "#testresults" }
+	{$loop $.test_results }
+&nbsp;&nbsp;&nbsp;// {$insert _.value $}<br>
+	{$}
+{$}

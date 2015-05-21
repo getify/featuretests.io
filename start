@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# make all files/directories behave the same for user/group
+umask 007
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ "$1" == "prod" ]; then
+	export NODE_ENV="production"
+	export SERVER_CONFIG="$DIR/prod.js"
+	prod/server.sh
+else
+	export SERVER_CONFIG="$DIR/dev.js"
+	dev/server.sh
+fi

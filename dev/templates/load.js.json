@@ -1,0 +1,43 @@
+{
+	"groups": [
+		{
+			"scripts": [
+				"/rs.js"
+			],
+			"wait": "#featureTests"
+		},
+		{
+			"scripts": [
+				"/js/external/jquery.js",
+				"/js/external/asq.js",
+				"/js/external/asq.contrib.js",
+				"/js/external/grips.debug.min.js",
+				"/js/external/history.js",
+				"/js/external/eventemitter2.js"
+			],
+			"wait": "#setupEvents"
+		},
+		{
+			"scripts": [
+				"/js/Request.js",
+				"/js/API.js",
+				"/js/Notify.js",
+				"/js/Tmpls.js"
+			],
+			"wait": ""
+		},
+		{
+			"scripts": [
+				"/js/Pages.js",
+				"/js/View.js"
+			],
+			"wait": "#setupPages"
+		},
+		{
+			"scripts": [
+				"/js/site.js"
+			],
+			"wait": ""
+		}
+	]
+}

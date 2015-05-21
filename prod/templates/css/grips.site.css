@@ -1,0 +1,114 @@
+*, *:before, *:after {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html, body {
+	padding: 0px;
+	margin: 0px;
+}
+
+html, body, input[type=text], input[type=password],
+input[type=checkbox], input[type=radio], textarea {
+	font-size: 19px;
+	line-height: 29px;
+	font-family: Tahoma, sans-serif;
+	background-color: =mainBGColor;
+	color: =mainTextColor;
+	letter-spacing: 2px;
+	border: none;
+}
+
+input[type=text], input[type=password], textarea {
+	border: 2px solid =mainTextColor;
+}
+
+#content {
+	padding: 25px;
+}
+
+nav {
+	padding: 0px 10px;
+	background-color: =navBGColor;
+	color: =navTextColor;
+	width: 100%;
+	height: 60px;
+	line-height: 60px;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+nav a {
+	color: =navTextColor;
+	text-decoration: none;
+}
+
+#notifications {
+	display: none;
+	position: fixed;
+	top: 5px;
+	right: 10px;
+	width: 300px;
+	background-color: =notificationsBGColor;
+	color: =notificationsTextColor;
+	border: 2px solid =notificationsBorderColor;
+	padding: 10px;
+}
+
+#notifications .list {
+	min-height: 20px;
+	max-height: 100px;
+	overflow: scroll;
+}
+
+#notifications .close {
+	position: absolute;
+	right: -5px;
+	top: -5px;
+	background-color: =notificationsBGColor;
+	color: =notificationsTextColor;
+	border: 2px solid =notificationsBorderColor;
+	font-size: 12px;
+	line-height: 20px;
+	width: 20px;
+	font-weight: bold;
+	text-align: center;
+	letter-spacing: 0px;
+	cursor: pointer;
+}
+
+#notifications .list .notification {
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	border-bottom: 1px solid =notificationsTextColor;
+}
+
+#notifications .list .notification:last-child {
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+	border-bottom: none;
+}
+
+.examplecode {
+	max-width: 100%;
+	overflow: scroll;
+	display: inline-block;
+	background-color: =exampleCodeBGColor;
+	padding: 15px;
+	border: 1px solid =exampleCodeBorderColor;
+	color: =exampleCodeTextColor;
+	font-size: 20px;
+	white-space: nowrap;
+}
+
+.mybrowserresults {
+	min-width: 350px;
+}
+
+code {
+	display: inline;
+	background-color: =exampleCodeBGColor;
+	color: =exampleCodeTextColor;
+	padding: 2px;
+	font-family: monospace;
+}
