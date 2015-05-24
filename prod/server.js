@@ -95,8 +95,7 @@ routes.push(
 	}
 );
 
-// UNDO
-if (false && PROD) {
+if (PROD) {
 	routes.push(
 		// perform hostname/protocol redirects?
 		function canonicalRedirect(req,res) {
