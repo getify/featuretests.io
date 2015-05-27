@@ -3,10 +3,12 @@
 rm -rf templates/cache
 cd web
 find ./ -name "*.gz" -print0 | xargs -0 -I thefile rm -rf thefile
+find ./ -name "*.map" -print0 | xargs -0 -I thefile rm -rf thefile
 rm -rf html
 rm -f css/site.css
 cd js
 rm -f load.js
+rm -f Tmpls.js
 rm -f *.min.js*
 cd pages
 rm -f *.min.js*

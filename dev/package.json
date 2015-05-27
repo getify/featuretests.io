@@ -7,6 +7,7 @@
 		"asynquence-contrib": "~0.9.0-a",
 		"es-feature-tests": "latest",
 		"eventemitter2": "~0.4.14",
+		"forever": "~0.14.1",
 		"grips": "~0.3.4-a",
 		"minimist": "~1.1.1",
 		"mkdirp": "~0.5.1",

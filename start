@@ -1,8 +1,22 @@
 #!/bin/bash
 
+# verify Node/iojs requirements
+{
+	NODEVER="$( node --version )"
+} &> /dev/null
+if	[[ -z "$NODEVER" ]] ||
+	(
+		[[ $NODEVER =~ ^v([0-9]+)\. ]] &&
+		[[ "${BASH_REMATCH[1]}" -lt 1 ]]
+	); then
+	echo "Node/iojs 1.0+ is required."
+	exit 1
+fi
+
 # make all files/directories behave the same for user/group
 umask 007
 
+# get current working directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [ "$1" == "prod" ]; then

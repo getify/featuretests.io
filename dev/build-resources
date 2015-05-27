@@ -39,9 +39,9 @@ var	PROD = (process.env.NODE_ENV === "production"),
 	FILE_LOADJS_DATA = path.join(DIR_TEMPLATES,"load.js.json"),
 	FILE_LOADJS = path.join(DIR_WEB_JS,"load.js"),
 
-	UMASK = eval("0o007"),
-	DIR_PERMS = eval("0o770"),
-	FILE_PERMS = eval("0o640")
+	UMASK = 7, // 0o007
+	DIR_PERMS = 504, // 0o770
+	FILE_PERMS = 416 // 0o640
 ;
 
 global.grips = grips;
@@ -227,7 +227,7 @@ function preamble() {
 		console.log("*** Building production resources ***");
 	}
 	else {
-		console.log("*** Building debug resources ***");
+		console.log("*** Building dev resources ***");
 	}
 }
 
@@ -580,8 +580,6 @@ function minifyWebJSFiles(filepaths) {
 
 		// minify file
 		result = ugly.minify(filepath,{
-			//inSourceMap: ..,
-			//outSourceMap: filename.replace(/\.js$/,".min.js.map"),
 			mangle: true,
 			compress: true,
 			output: {
@@ -595,15 +593,6 @@ function minifyWebJSFiles(filepaths) {
 			result.code + "\n",
 			{ encoding: "utf8", mode: FILE_PERMS }
 		);
-
-		// console.log("... source map:",to_filepath + ".map");
-
-		// // write sourcemap
-		// fs.writeFileSync(
-		// 	to_filepath + ".map",
-		// 	result.map + "\n",
-		// 	{ encoding: "utf8", mode: FILE_PERMS }
-		// );
 	});
 }
 
