@@ -1,3 +1,4 @@
+/prod*
 node_modules
 *.gz
 *.min.js
