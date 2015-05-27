@@ -21,13 +21,13 @@
 		"url": "git://github.com/getify/featuretests.io.git"
 	},
 	"keywords": [
-		"feature tests"
+		"feature tests", "ES6"
 	],
 	"bugs": {
 		"url": "https://github.com/getify/featuretests.io/issues",
 		"email": "getify@gmail.com"
 	},
-	"homepage": "http://github.com/getify/featuretests.io",
+	"homepage": "https://featuretests.io",
 	"author": "Kyle Simpson <getify@gmail.com>",
 	"license": "MIT"
 }
